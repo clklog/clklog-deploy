@@ -1,0 +1,206 @@
+version: "3"
+
+services:
+  gateway:
+    image: "registry.cn-shanghai.aliyuncs.com/clklog/nginx:1.23"
+    restart: "always"
+    environment:
+      - TZ=Asia/Shanghai
+    volumes:
+      - ./clklog_dc_config/gateway/full:/etc/nginx/conf.d:rw
+    depends_on:
+      - clklog-ui
+      - clklog-receiver
+      - clklog-api
+    ports:
+      - "80:80"
+    networks:
+      - frontend
+      - backend
+
+  redis:
+    image: "registry.cn-shanghai.aliyuncs.com/clklog/redis:7.0"
+    restart: "always"
+    environment:
+      - TZ=Asia/Shanghai
+    command: redis-server /etc/redis/redis.conf
+    privileged: true
+    volumes:
+      - ./clklog_dc_config/redis/redis.conf:/etc/redis/redis.conf
+      - ./clklog_dc_data/redis:/redisdata
+    networks:
+      - backend
+
+  clickhouse:
+    image: "registry.cn-shanghai.aliyuncs.com/clklog/clickhouse_clickhouse-server:23.2.1"
+    restart: "always"
+    environment:
+      - TZ=Asia/Shanghai
+    volumes:
+      - ./clklog_dc_config/clickhouse/config.xml:/etc/clickhouse-server/config.xml:rw
+      - ./clklog_dc_config/clickhouse/users.d/default-password.xml:/etc/clickhouse-server/users.d/default-password.xml:rw
+      - ./clklog_dc_data/clickhouse/log:/var/log/clickhouse-server
+      - ./clklog_dc_data/clickhouse:/var/lib/clickhouse:rw
+    ports:
+      - "8123:8123"
+      - "9000:9000"
+    networks:
+      - backend
+
+  zookeeper:
+    image: registry.cn-shanghai.aliyuncs.com/clklog/bitnami_zookeeper:3.9.2
+    ports:
+      - "2181:2181"
+    environment:
+      - TZ=Asia/Shanghai
+      - ALLOW_ANONYMOUS_LOGIN=yes
+    volumes:
+      - ./clklog_dc_data/zookeeper:/bitnami/zookeeper
+    networks:
+      - backend
+
+  kafka:
+    image: &kafka-image registry.cn-shanghai.aliyuncs.com/clklog/bitnami_kafka:3.6.2
+    ports:
+      - "9092:9092"
+    depends_on:
+      zookeeper:
+        condition: service_started
+    environment:
+      - TZ=Asia/Shanghai
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://:9092
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+    volumes:
+      - ./clklog_dc_data/kafka:/bitnami/kafka
+    networks:
+      - backend
+    healthcheck:
+      test: ["CMD", "kafka-topics.sh", "--bootstrap-server=localhost:9092", "--list"]
+      start_period: 15s
+      interval: 10s
+
+  init-kafka:
+    image: *kafka-image
+    working_dir: /opt/bitnami/kafka/bin
+    entrypoint: /bin/bash
+    depends_on:
+      kafka:
+        condition: service_healthy
+    command: |
+      kafka-topics.sh --create --if-not-exists --topic clklog --replication-factor=1 --partitions=6 --bootstrap-server kafka:9092
+    networks:
+      - backend
+
+  jobmanager:
+    image: registry.cn-shanghai.aliyuncs.com/clklog/processing:flink-standalone
+    ports:
+      - "8081:8081"
+    command: standalone-job --job-classname com.zcunsoft.clklog.analysis.entry.JieXiJson --job-id $PROCESSING_JOB_ID --allowNonRestoredState
+    volumes:
+      - ./clklog_dc_data/processing/checkpoints:/opt/flink/usrlib/checkpoints:rw
+      # 挂载您自己的iplib目录
+      #- ./clklog_dc_config/iplib/:/opt/flink/usrlib/iplib
+      - ./clklog_dc_config/processing/config.properties:/opt/flink/config.properties
+    environment:
+      - TZ=Asia/Shanghai
+      - PROCESSING_JOB_ID=$PROCESSING_JOB_ID
+      - |
+        FLINK_PROPERTIES=
+        jobmanager.rpc.address: jobmanager
+        parallelism.default: 2
+    networks:
+      - backend
+
+  taskmanager:
+    image: registry.cn-shanghai.aliyuncs.com/clklog/processing:flink-standalone
+    depends_on:
+      - jobmanager
+    command: taskmanager
+    scale: 1
+    volumes:
+      - ./clklog_dc_data/processing/checkpoints:/opt/flink/usrlib/checkpoints:rw
+      # 挂载您自己的iplib目录
+      #- ./clklog_dc_config/iplib/:/opt/flink/usrlib/iplib
+      - ./clklog_dc_config/processing/config.properties:/opt/flink/config.properties
+    environment:
+      - TZ=Asia/Shanghai
+      - |
+        FLINK_PROPERTIES=
+        jobmanager.rpc.address: jobmanager
+        taskmanager.numberOfTaskSlots: 8
+    networks:
+      - backend
+
+  clklog-ui:
+    image: "registry.cn-shanghai.aliyuncs.com/zcunsoft/clklog_frontend:latest"
+    restart: "always"
+    environment:
+      - TZ=Asia/Shanghai
+    expose:
+      - "80"
+    volumes:
+      - ./clklog_dc_config/ui/config.js:/usr/share/nginx/html/config.js
+    networks:
+      - frontend
+
+  clklog-receiver:
+    image: "registry.cn-shanghai.aliyuncs.com/clklog/receiver:latest"
+    restart: "always"
+    depends_on:
+      - clklog-init
+      - redis
+    volumes:
+      - ./clklog_dc_data/receiver/:/log
+    environment:
+      - TZ=Asia/Shanghai
+      - SERVER_PORT=8002
+      - SPRING_REDIS_HOST=redis
+      - SPRING_REDIS_PORT=6379
+      - SPRING_DATASOURCE_CLICKHOUSE_JDBC_URL=jdbc:clickhouse://clickhouse/${CLKLOG_LOG_DB}
+      - SPRING_DATASOURCE_CLICKHOUSE_USERNAME=${CK_USER_NAME}
+      - SPRING_DATASOURCE_CLICKHOUSE_PASSWORD=${CK_USER_PWD}
+      - RECEIVER_PROJECT_LIST=${PROJECT_NAME}
+      - RECEIVER_RESOURCE_PATH=
+      - RECEIVER_ENABLE_SIMPLE_VERSION=false
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:9092
+    networks:
+      - backend
+
+  clklog-api:
+    image: "registry.cn-shanghai.aliyuncs.com/clklog/api:latest"
+    restart: "always"
+    depends_on:
+      - clklog-init
+    environment:
+      - SPRINGDOC_API_DOCS_PATH=/api/v3/api-docs
+      - TZ=Asia/Shanghai
+      - SERVER_PORT=8003
+      - SPRING_DATASOURCE_CLICKHOUSE_JDBC_URL=jdbc:clickhouse://clickhouse/${CLKLOG_LOG_DB}
+      - SPRING_DATASOURCE_CLICKHOUSE_USERNAME=${CK_USER_NAME}
+      - SPRING_DATASOURCE_CLICKHOUSE_PASSWORD=${CK_USER_PWD}
+      - CLKLOGAPI_ACCESS_CONTROL_ALLOW_ORIGIN="*"
+      - CLKLOGAPI_PROJECT_NAME=${PROJECT_NAME}
+      - CLKLOGAPI_PROJECT_HOST=${PROJECT_HOST}
+    volumes:
+      - ./clklog_dc_data/api/setting:/setting
+    networks:
+      - backend
+
+  clklog-init:
+    image: "registry.cn-shanghai.aliyuncs.com/clklog/init:latest"
+    restart: "always"
+    depends_on:
+      - clickhouse
+    environment:
+      - TZ=Asia/Shanghai
+      - SERVER_PORT=8001
+      - SPRING_DATASOURCE_CLICKHOUSE_JDBC_URL=jdbc:clickhouse://clickhouse/default
+      - SPRING_DATASOURCE_CLICKHOUSE_USERNAME=${CK_USER_NAME}
+      - SPRING_DATASOURCE_CLICKHOUSE_PASSWORD=${CK_USER_PWD}
+    networks:
+      - backend
+
+networks:
+  frontend: {}
+  backend: {}
