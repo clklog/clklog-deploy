@@ -37,14 +37,12 @@
 
     ```
    curl -O https://github.com/clklog/clklog-deploy/raw/refs/heads/main/releases/clklog-docker-compose-1.1.0.tar.gz
-
     ``
 
 - gitee 镜像下载
 
     ```
    curl -O https://gitee.com/clklog/clklog-deploy/raw/main/releases/clklog-docker-compose-1.1.0.tar.gz
-
     ```
 
 2. 拷贝镜像,并解压镜像文件，参考代码如下：
@@ -108,8 +106,16 @@
 
 1. 下载 ClkLog Docker Compose配置文件，参考代码如下
 
+- github 镜像下载
+
     ```
-   curl -O https://clklog.com/res/docker/clklog-docker-compose.tar.gz
+   curl -O https://github.com/clklog/clklog-deploy/raw/refs/heads/main/releases/clklog-docker-compose-1.1.0.tar.gz
+    ``
+
+- gitee 镜像下载
+
+    ```
+   curl -O https://gitee.com/clklog/clklog-deploy/raw/main/releases/clklog-docker-compose-1.1.0.tar.gz
     ```
 
 2. 拷贝镜像,并解压镜像文件，参考代码如下：
