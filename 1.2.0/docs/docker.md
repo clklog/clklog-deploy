@@ -1,4 +1,3 @@
-[TOC]
 
 # docker 安装说明
 
@@ -39,7 +38,7 @@
     ```
    curl -O https://github.com/clklog/clklog-deploy/raw/refs/heads/main/releases/clklog-docker-compose-1.2.0.zip
 
-    ``
+    ```
 
 - gitee 镜像下载
 
@@ -53,7 +52,7 @@
     ```
     tar -zxvf clklog-docker-compose.tar.gz
     cd clklog-docker-compose 
- 
+    ```
 
 3. 执行目录初始化脚本，代码如下：
 

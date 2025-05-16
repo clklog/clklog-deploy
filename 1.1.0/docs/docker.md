@@ -53,7 +53,7 @@
     ```
     tar -zxvf clklog-docker-compose.tar.gz
     cd clklog-docker-compose 
- 
+    ```
 
 3. 执行目录初始化脚本，代码如下：
 
