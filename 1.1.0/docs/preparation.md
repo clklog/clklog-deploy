@@ -1,5 +1,5 @@
 
-## 环境准备
+# 环境准备
 <!-- - Ubuntu SMP -->
 - Linux服务器（本文档以ubuntu为例）
 - JDK 1.8
@@ -12,7 +12,7 @@
 - nodejs >= 8.9
 - npm >=3.0.0
 
-## 初始化步骤参考
+# 初始化步骤参考
 
 创建安装目录
 
@@ -20,7 +20,7 @@
 mkdir /usr/local/services
 ```
 
-### Java 1.8 安装参考
+## Java 1.8 安装参考
 
 1. 安装Java
     通过apt-get安装jdk8
@@ -41,7 +41,7 @@ mkdir /usr/local/services
     java -version
     ```
 
-### nginx 安装参考
+## nginx 安装参考
 
 ```
 
@@ -50,9 +50,9 @@ systemctl start nginx
 
 ```
 
-- #### [nginx安装注意事项](installation/question.md#nginx安装注意事项)
+- ### [nginx安装注意事项](https://clklog.com/#installation/question.md#nginx安装注意事项)
 
-### Redis 3.2.4 安装参考
+## Redis 3.2.4 安装参考
 
 1. 从 Redis 官网下载安装包
 
@@ -93,7 +93,7 @@ systemctl start nginx
 
     默认情况下，Redis 会被安装在`/usr/local/bin`目录下
 
-- #### [redis安装注意事项](installation/question.md#redis安装注意事项)
+- ### [redis安装注意事项](https://clklog.com/#installation/question.md#redis安装注意事项)
 
 6. 修改配置
 
@@ -129,7 +129,7 @@ systemctl start nginx
 
 <br>
 
-### Zookeeper 3.7.2 安装参考
+## Zookeeper 3.7.2 安装参考
 
 1. 从  Zookeeper  官网下载安装包
 
@@ -169,13 +169,13 @@ systemctl start nginx
     ./bin/zkServer.sh status
     ```
 
-    ![](../assets/imgs/zookeepercheck.png)
+    ![](https://clklog.com/assets/imgs/zookeepercheck.png)
 
     未启动成功，从`./logs`里查看启动日志
 
 <br>
 
-### Kafka 2.12-3.3.1 安装参考
+## Kafka 2.12-3.3.1 安装参考
 
 1. 从 Kafka 官网下载安装包
 
@@ -207,7 +207,7 @@ systemctl start nginx
     ./bin/kafka-topics.sh --create --bootstrap-server 127.0.0.1:9092 --replication-factor 1 --partitions 1 --topic test
      ```
 
-    ![](../assets/imgs/createtop.png)
+    ![](https://clklog.com/assets/imgs/createtop.png)
 
     查看`topic`
 
@@ -217,11 +217,11 @@ systemctl start nginx
 
     ```
 
-    ![](../assets/imgs/checktopic.png)
+    ![](https://clklog.com/assets/imgs/checktopic.png)
 
     不报错正常，如果未启动成功，从`./logs`里查看启动日志
 
-### Flink 1.14.6 安装参考
+## Flink 1.14.6 安装参考
 
 1. 从 Flink官网下载安装包
 
@@ -252,9 +252,9 @@ systemctl start nginx
 
     <http://localhost:8081/>
 
-    ![](../assets/imgs/preview.png)
+    ![](https://clklog.com/assets/imgs/preview.png)
 
-### Clickhouse 23.2.1 安装参考
+## Clickhouse 23.2.1 安装参考
 
 1. 安装clickhouse
    安装参考：<https://clickhouse.com/docs/en/install>

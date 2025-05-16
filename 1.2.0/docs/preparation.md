@@ -51,7 +51,7 @@ systemctl start nginx
 
 ```
 
-- #### [nginx安装注意事项](installation/question.md#nginx安装注意事项)
+- #### [nginx安装注意事项](https://clklog.com/#installation/question.md#nginx安装注意事项)
 
 ### Redis 3.2.4 安装参考
 
@@ -94,7 +94,7 @@ systemctl start nginx
 
     默认情况下，Redis 会被安装在`/usr/local/bin`目录下
 
-- #### [redis安装注意事项](installation/question.md#redis安装注意事项)
+- #### [redis安装注意事项](https://clklog.com/#installation/question.md#redis安装注意事项)
 
 6. 修改配置
 
@@ -170,7 +170,7 @@ systemctl start nginx
     ./bin/zkServer.sh status
     ```
 
-    ![](../assets/imgs/zookeepercheck.png)
+    ![](https://clklog.com/assets/imgs/zookeepercheck.png)
 
     未启动成功，从`./logs`里查看启动日志
 
@@ -208,7 +208,7 @@ systemctl start nginx
     ./bin/kafka-topics.sh --create --bootstrap-server 127.0.0.1:9092 --replication-factor 1 --partitions 1 --topic test
      ```
 
-    ![](../assets/imgs/createtop.png)
+    ![](https://clklog.com/assets/imgs/createtop.png)
 
     查看`topic`
 
@@ -218,7 +218,7 @@ systemctl start nginx
 
     ```
 
-    ![](../assets/imgs/checktopic.png)
+    ![](https://clklog.com/assets/imgs/checktopic.png)
 
     不报错正常，如果未启动成功，从`./logs`里查看启动日志
 
@@ -253,7 +253,7 @@ systemctl start nginx
 
     <http://localhost:8081/>
 
-    ![](../assets/imgs/preview.png)
+    ![](https://clklog.com/assets/imgs/preview.png)
 
 ### Clickhouse 23.2.1 安装参考
 

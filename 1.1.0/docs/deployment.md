@@ -1,11 +1,11 @@
 
-## 应用部署
+# 应用部署
 
-### 1.准备 linux 服务器
+## 1.准备 linux 服务器
 
 以下配置以 `YOUR_DOMAIN` 指代您使用的域名或ip。
 
-### 2.数据库初始化
+## 2.数据库初始化
 
 1. 根据 `scripts` 下的`sql脚本.txt`文件创建clickhouse实例schema和表
 
@@ -21,7 +21,7 @@
 
 <br>
 
-### 3.nginx 路由配置参考
+## 3.nginx 路由配置参考
 
 1. 创建配置文件，设置路由
 
@@ -91,7 +91,7 @@
     systemctl restart nginx
     ```
 
-### 4. 部署统计接口 clklog-api
+## 4. 部署统计接口 clklog-api
 
 1. 编译应用程序
 
@@ -179,7 +179,7 @@
 
 <br>
 
-### 5. 统计后台前端展示 clklog-ui
+## 5. 统计后台前端展示 clklog-ui
 
 1. 开发环境编译前端应用程序
 
@@ -237,7 +237,7 @@
    此时您可访问http://YOUR_DOMAIN/ ，验证部署成果。
    预置账号密码为 admin/clklog。
 
-### 6.部署接收服务 clklog-receiver
+## 6.部署接收服务 clklog-receiver
 
 1. 编译应用程序
 
@@ -315,7 +315,7 @@
     systemctl start clklog-receiver
     ```
 
-### 7.部署处理服务 clklog-processing
+## 7.部署处理服务 clklog-processing
 
 1. 编译应用程序
 
@@ -372,7 +372,7 @@
 
     其中 `-s` 参数为`checkpoint`位置。对于中断后再执行的任务，需要指定该参数，如不指定则从头开始消费`kafka`消息。
 
-### 8. 部署计算脚本clklog-scripts
+## 8. 部署计算脚本clklog-scripts
 
 - 计算脚本是基于Clickhouse集群中`log_analysis`表进行多维计算，获得各个维度上的统计报表。
   使用Cron来进行任务的定时调度。
@@ -430,7 +430,7 @@
 
 <br>
 
-### 9. 部署环境验证
+## 9. 部署环境验证
 
 1. Flink后台地址
 
@@ -458,6 +458,6 @@
     http://YOUR_DOMAIN/
     ```
 
-### 10. sdk 埋点集成
+## 10. sdk 埋点集成
 
    埋点代码接入方式参考：[sdk-埋点集成参考](https://clklog.com/#/integration/reference)

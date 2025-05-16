@@ -1,11 +1,11 @@
 
-## 应用部署
+# 应用部署
 
-### 1.准备 linux 服务器
+## 1.准备 linux 服务器
 
 以下配置以 `YOUR_DOMAIN` 指代您使用的域名或ip。
 
-### 2.数据库初始化
+## 2.数据库初始化
 
 1. 解压[docker安装镜像文件],根据镜像目录`clklog_dc_config\init\` 下的`mysql_clklog.sql`文件创建mysql实例schema和表。
 
@@ -21,7 +21,7 @@ mysql -u root -p < PATH_TO_SQL_FILE
 
 <br>
 
-### 3. 部署初始化服务 clklog-init
+## 3. 部署初始化服务 clklog-init
 
 ClkLog初始化服务，用于clickhouse数据库初始化和定时脚本任务配置。
 
@@ -81,7 +81,7 @@ ClkLog初始化服务，用于clickhouse数据库初始化和定时脚本任务�
         visitor_detail_bysession: '0 */1 * * * ?'
 ```
 
-### 4.部署管理接口 clklog-manage
+## 4.部署管理接口 clklog-manage
 
 ClkLog管理接口，提供clklog-ui前端项目管理、账号管理及数据清洗过滤相关接口。
 
@@ -154,7 +154,7 @@ ClkLog管理接口，提供clklog-ui前端项目管理、账号管理及数据�
     log-store-path:
   ```
 
-### 5. 部署统计接口 clklog-api
+## 5. 部署统计接口 clklog-api
 
 ClkLog统计接口，提供clklog-ui前端各维度数据查询统计分析接口。
 
@@ -252,7 +252,7 @@ ClkLog统计接口，提供clklog-ui前端各维度数据查询统计分析接�
 
 <br>
 
-### 6. 统计后台前端展示 clklog-ui
+## 6. 统计后台前端展示 clklog-ui
 
 ClkLog前端项目，该项目是基于 vue-element-admin 实现的ClkLog相关统计分析及系统相关功能配置的前端应用。
 
@@ -312,7 +312,7 @@ ClkLog前端项目，该项目是基于 vue-element-admin 实现的ClkLog相关�
    此时您可访问http://YOUR_DOMAIN/ ，验证部署成果。
    预置账号密码为 admin/clklog。
 
-### 7.部署接收服务 clklog-receiver
+## 7.部署接收服务 clklog-receiver
 
 ClkLog数据接收服务，用于接收客户端项目通过神策SDK埋点后采集的日志数据并存入kafka。
 
@@ -335,7 +335,7 @@ ClkLog数据接收服务，用于接收客户端项目通过神策SDK埋点后�
     根据前面安装的组件配置，修改`application.yml`中`redis`、`kafka`相关配置，代码如下：
 
     ```
-    spring:
+     spring:
       kafka:
         # bootstrap-servers的值根据kafka配置文件里的listeners的值进行配置。
         bootstrap-servers: localhost:9092
@@ -348,28 +348,26 @@ ClkLog数据接收服务，用于接收客户端项目通过神策SDK埋点后�
         # sentinel:
         # master: gct
         # nodes: 10.100.2.1:26379,10.100.2.2:26379,10.100.2.3:26379
-   kafka:
-
-  bootstrap-servers: 10.10.220.188:9092
-  producer: # 生产者
-    client-id: "clklog-producer-group"
-    retries: 3 # 设置大于 0 的值，则客户端会将发送失败的记录重新发送
-    topic: clklog
-    acks: 0
-    key-serializer: org.apache.kafka.common.serialization.StringSerializer
-    value-serializer: org.apache.kafka.common.serialization.StringSerializer
-    properties:
-   linger:
-     ms: 1000
-  listener:
-    ack-mode: MANUAL_IMMEDIATE
-    receiver:
+      kafka:
+      bootstrap-servers: 10.10.220.188:9092
+      producer: # 生产者
+        client-id: "clklog-producer-group"
+        retries: 3 # 设置大于 0 的值，则客户端会将发送失败的记录重新发送
+        topic: clklog
+        acks: 0
+        key-serializer: org.apache.kafka.common.serialization.StringSerializer
+        value-serializer: org.apache.kafka.common.serialization.StringSerializer
+        properties:
+        linger:
+          ms: 1000
+      listener:
+        ack-mode: MANUAL_IMMEDIATE
+    receiver: 
       # resource-path 默认为空，如果资源及配置文件(iplib,app-setting.json)不与jar同目录，则修改为它们的父路径，否则无需配置。
       resource-path:  
       # enable-simple-version 默认为false, 表示日志存入kafka，由flink处理后存入clickhouse；当值为true时，表示日志直接存入clickhouse，无需安装kafka和flink。配置修改后需重启clklog-receiver服务。
       enable-simple-version: false
       access-control-allow-origin-patterns: "*"
-
     ```
 
 4. 创建服务
@@ -405,7 +403,7 @@ ClkLog数据接收服务，用于接收客户端项目通过神策SDK埋点后�
     systemctl start clklog-receiver
     ```
 
-### 8.部署处理服务 clklog-processing
+## 8.部署处理服务 clklog-processing
 
 ClkLog数据处理服务，依托flink，消费kafka数据并存入clickhouse。
 
@@ -469,18 +467,18 @@ ClkLog数据处理服务，依托flink，消费kafka数据并存入clickhouse。
 
     其中 `-s` 参数为`checkpoint`位置。对于中断后再执行的任务，需要指定该参数，如不指定则从头开始消费`kafka`消息。
 
-### 9. nginx 路由配置参考
+## 9. nginx 路由配置参考
 
 1. 确认您使用的nginx捆绑了with-http_auth_request_module模组
 
-```
-# 执行如下命令，确认输出包含 --with-http_auth_request_module
+    ```
+    # 执行如下命令，确认输出包含 --with-http_auth_request_module
 
-nginx -V 2>&1 | grep -- 'http_auth_request_module'
+    nginx -V 2>&1 | grep -- 'http_auth_request_module'
 
-# 如果没有，请重新安装nginx
+    # 如果没有，请重新安装nginx
 
-```
+    ```
 
 2. 创建配置文件，设置路由
 
@@ -560,13 +558,13 @@ nginx -V 2>&1 | grep -- 'http_auth_request_module'
 
     ```
 
-3. 重启nginx
+2. 重启nginx
 
     ```
     systemctl restart nginx
     ```
 
-### 10. 部署环境验证
+## 10. 部署环境验证
 
 1. Flink后台地址
 
@@ -598,6 +596,6 @@ nginx -V 2>&1 | grep -- 'http_auth_request_module'
     http://YOUR_DOMAIN/
     ```
 
-### 10. sdk 埋点集成
+## 10. sdk 埋点集成
 
    埋点代码接入方式参考：[sdk-埋点集成参考](https://clklog.com/#/integration/reference)

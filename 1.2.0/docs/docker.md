@@ -36,14 +36,14 @@
 - github 镜像下载
 
     ```
-   curl -O https://github.com/clklog/clklog-deploy/raw/refs/heads/main/releases/clklog-docker-compose-1.2.0.zip
+   curl -O https://github.com/clklog/clklog-deploy/raw/refs/heads/main/releases/clklog-docker-compose-1.2.0.tar.gz
 
     ```
 
 - gitee 镜像下载
 
     ```
-   curl -O https://gitee.com/clklog/clklog-deploy/raw/main/releases/clklog-docker-compose-1.2.0.zip
+   curl -O https://gitee.com/clklog/clklog-deploy/raw/main/releases/clklog-docker-compose-1.2.0.tar.gz
 
     ```
 
@@ -87,7 +87,7 @@
     docker compose -f docker-compose-clklog-simple.yml ps -a
     ```
 
-    ![image](../../assets/imgs/simple_container.png)  
+    ![image](https://clklog.com/assets/imgs/simple_container.png)  
 
 3. 验证镜像是否安装成功
 
@@ -166,7 +166,7 @@
     docker compose -f docker-compose-clklog-full.yml ps -a
     ```
 
-    ![image](../../assets/imgs/full_container_status.png)  
+    ![image](https://clklog.com/assets/imgs/full_container_status.png)  
 
 3. 验证镜像是否安装成功
 
@@ -178,7 +178,7 @@
 
    - flink后台地址： <http://YOUR_DOMAIN/flink/#/overview>，在flink后台查看job状态是否正常运行
 
-   ![image](../../assets/imgs/flink-status.png)  
+   ![image](https://clklog.com/assets/imgs/flink-status.png)  
 
 ### 埋点代码接入
 
