@@ -163,6 +163,9 @@ services:
     restart: "always"
     depends_on:
       - clickhouse
+    volumes:
+      # 挂载日志文件
+      - ./clklog_dc_data/initlog/:/log
     environment:
       - TZ=Asia/Shanghai
       - SERVER_PORT=8080
