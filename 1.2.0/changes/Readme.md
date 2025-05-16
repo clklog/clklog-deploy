@@ -14,11 +14,98 @@
 
 ### 一、Docker升级说明
 
-### 1、
+#### 1、更新编排文件
 
-### 2、
+a. 拷贝以下编排文件到服务器上
 
-### 3、
+- [docker-compose-clklog-full-base.yml](../docker-compose/docker-compose-clklog-full-base.yml)
+- [docker-compose-clklog-simple-base.yml](../docker-compose/docker-compose-clklog-simple-base.yml)
+
+b. 更新编排文件
+
+先备份以下文件
+
+- docker-compose-clklog-full.yml
+- docker-compose-clklog-simple.yml
+
+再覆盖新的编排文件
+
+- [docker-compose-clklog-full.yml](../docker-compose/docker-compose-clklog-full.yml)
+- [docker-compose-clklog-simple.yml](../docker-compose/docker-compose-clklog-simple.yml)
+
+
+#### 2、更新环境变量
+
+在原.env文件中添加以下内容
+
+```shell
+#[Mysql]
+MYSQL_ROOT_PASSWORD=5Hzyiy4RBfxM
+```
+
+#### 3、更新ui的配置
+
+在服务器上的clklog_dc_config/ui/config.js里添加BASE_API_MANAGE.
+
+参考 [config.js](../docker-compose/clklog_dc_config/ui/config.js)
+
+#### 4 更新processing的配置
+
+在服务器上的clklog_dc_config/processing/config.properties里添加以下内容
+
+```shell
+redis.database=0
+redis.pool.max-active=3
+redis.pool.max-idle=3
+redis.pool.min-idle=0
+redis.pool.max-wait=-1
+```
+配置项值依据实际情况修改.
+
+可以移除服务器上的clklog_dc_config/iplib目录下的txt文件.
+
+#### 5 更新clickhouse的配置
+
+此步可以选做,涉及数据库的日志级别及用户配置,非强制更新.
+
+用[clickhouse](../docker-compose/clklog_dc_config/clickhouse) 覆盖服务器上的同目录，并删除clklog_dc_config/clickhouse/config.xml.
+
+#### 6 更新manage的配置
+
+将[manage](../docker-compose/clklog_dc_config/manage) 文件夹拷贝到服务器上的clklog_dc_config目录下.
+
+#### 7 更新gateway的配置
+
+更新clklog_dc_config/gateway/full/default.conf和clklog_dc_config/gateway/simple/default.conf的内容如下:
+
+- 变更clklog_api_server和clklog_receiver_server的端口为8080.
+- 添加以下内容.
+
+```
+
+upstream clklog_manage_server {
+    server clklog-manage:8080;
+}
+```
+
+server节点部分添加以下内容：
+
+```
+	location /manage/ {
+		proxy_pass http://clklog_manage_server/;
+		proxy_set_header Host $host:$server_port;
+		proxy_set_header X-Real-IP $remote_addr;
+		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+	}
+
+	location /manage/v3/ {
+		proxy_pass http://clklog_manage_server/manage/v3/;
+		proxy_set_header Host $host:$server_port;
+		proxy_set_header X-Real-IP $remote_addr;
+		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+	}
+
+```
 
 ### 二、源码升级说明
 
