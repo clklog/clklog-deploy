@@ -33,7 +33,7 @@ services:
       retries: 3
 
   clklog-ui:
-    image: "registry.cn-shanghai.aliyuncs.com/clklog/ui:latest"
+    image: "registry.cn-shanghai.aliyuncs.com/clklog/ui:1.2.0"
     restart: "always"
     environment:
       - TZ=Asia/Shanghai
@@ -118,7 +118,7 @@ services:
       retries: 3
 
   clklog-manage:
-    image: "registry.cn-shanghai.aliyuncs.com/clklog/manage:latest"
+    image: "registry.cn-shanghai.aliyuncs.com/clklog/manage:1.2.0"
     restart: "always"
     depends_on:
       - mysql
