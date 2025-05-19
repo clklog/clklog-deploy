@@ -3,7 +3,7 @@
 - 产品名称：ClkLog
 - 产品型号：社区版
 - 代码版本号：V1.2.0
-- 版本发布时间：2025-05-16
+- 版本发布时间：2025-05-19
 
 # 升级说明
 
@@ -33,7 +33,6 @@ b. 更新编排文件
 - [docker-compose-clklog-full.yml](../docker-compose/docker-compose-clklog-full.yml)
 - [docker-compose-clklog-simple.yml](../docker-compose/docker-compose-clklog-simple.yml)
 
-
 #### 2、更新环境变量
 
 在原.env文件中添加以下内容
@@ -60,6 +59,7 @@ redis.pool.max-idle=3
 redis.pool.min-idle=0
 redis.pool.max-wait=-1
 ```
+
 配置项值依据实际情况修改.
 
 可以移除服务器上的clklog_dc_config/iplib目录下的txt文件.
@@ -91,19 +91,19 @@ upstream clklog_manage_server {
 server节点部分添加以下内容：
 
 ```
-	location /manage/ {
-		proxy_pass http://clklog_manage_server/;
-		proxy_set_header Host $host:$server_port;
-		proxy_set_header X-Real-IP $remote_addr;
-		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-	}
+ location /manage/ {
+  proxy_pass http://clklog_manage_server/;
+  proxy_set_header Host $host:$server_port;
+  proxy_set_header X-Real-IP $remote_addr;
+  proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+ }
 
-	location /manage/v3/ {
-		proxy_pass http://clklog_manage_server/manage/v3/;
-		proxy_set_header Host $host:$server_port;
-		proxy_set_header X-Real-IP $remote_addr;
-		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-	}
+ location /manage/v3/ {
+  proxy_pass http://clklog_manage_server/manage/v3/;
+  proxy_set_header Host $host:$server_port;
+  proxy_set_header X-Real-IP $remote_addr;
+  proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+ }
 
 ```
 
