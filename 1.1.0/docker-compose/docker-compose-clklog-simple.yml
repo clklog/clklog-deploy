@@ -48,7 +48,7 @@ services:
       - backend
 
   clklog-ui:
-    image: "registry.cn-shanghai.aliyuncs.com/zcunsoft/clklog_frontend:latest"
+    image: "registry.cn-shanghai.aliyuncs.com/clklog/ui:1.1.0"
     restart: "always"
     environment:
       - TZ=Asia/Shanghai
@@ -60,7 +60,7 @@ services:
       - frontend
 
   clklog-receiver:
-    image: "registry.cn-shanghai.aliyuncs.com/clklog/receiver:latest"
+    image: "registry.cn-shanghai.aliyuncs.com/clklog/receiver:1.1.0"
     restart: "always"
     depends_on:
       - clklog-init
@@ -82,7 +82,7 @@ services:
       - backend
 
   clklog-api:
-    image: "registry.cn-shanghai.aliyuncs.com/clklog/api:latest"
+    image: "registry.cn-shanghai.aliyuncs.com/clklog/api:1.1.0"
     restart: "always"
     depends_on:
       - clklog-init
@@ -102,7 +102,7 @@ services:
       - backend
 
   clklog-init:
-    image: "registry.cn-shanghai.aliyuncs.com/clklog/init:latest"
+    image: "registry.cn-shanghai.aliyuncs.com/clklog/init:1.1.0"
     restart: "always"
     depends_on:
       - clickhouse
