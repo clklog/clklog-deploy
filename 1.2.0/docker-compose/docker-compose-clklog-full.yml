@@ -140,7 +140,7 @@ services:
       retries: 3
 
   clklog-api:
-    image: "registry.cn-shanghai.aliyuncs.com/clklog/api:1.2.0"
+    image: "registry.cn-shanghai.aliyuncs.com/clklog/api:1.2.1"
     restart: "always"
     depends_on:
       - clickhouse
@@ -211,7 +211,7 @@ services:
       retries: 3
 
   clklog-init:
-    image: "registry.cn-shanghai.aliyuncs.com/clklog/init:1.2.0"
+    image: "registry.cn-shanghai.aliyuncs.com/clklog/init:1.2.1"
     restart: "always"
     depends_on:
       - clickhouse
