@@ -33,7 +33,7 @@ services:
       retries: 3
 
   clklog-ui:
-    image: "registry.cn-shanghai.aliyuncs.com/clklog/ui:1.2.0"
+    image: "registry.cn-shanghai.aliyuncs.com/clklog/ui:1.2.1"
     restart: "always"
     environment:
       - TZ=Asia/Shanghai
